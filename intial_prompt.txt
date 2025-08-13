@@ -1,0 +1,440 @@
+Fantasy Draft Order Selector Web App - Roo Code Development Prompt
+Project Overview
+Create a full-stack web application for fantasy league draft order selection based on proximity to world landmarks. Built with free/open-source technologies, designed for incremental development with 200-line script limits and manual testing after each feature.
+Tech Stack (100% Free/Open Source)
+	• Frontend: React.js with TypeScript
+	• Backend: Node.js with Express.js
+	• Database: SQLite (development) + Railway PostgreSQL (production)
+	• Authentication: Google OAuth 2.0
+	• Maps: Leaflet with OpenStreetMap (free alternative to Google Maps)
+	• Real-time: Polling every 3-5 seconds (no persistent connections needed)
+	• Styling: Tailwind CSS
+	• Icons: Free sports sprite pack from OpenGameArt.org or similar
+	• Image Sources: Wikimedia Commons for landmark images
+	• Development: Docker for consistency (optional)
+	• Deployment: Vercel (frontend) + Railway (backend/database)
+Development Approach
+	• Script Limit: Each generated script should not exceed 200 lines
+	• Testing: Manual testing checklist after each feature
+	• Incremental: Test and validate each feature before moving to next
+	• Version Control: GitHub repo with proper structure and CI/CD
+Implementation Order & Testing Strategy
+Phase 1: Foundation (Scripts 1-3)
+Script 1: Project Setup & Basic Structure (< 200 lines)
+	• Initialize React + TypeScript project
+	• Set up Express server with basic routes
+	• Configure SQLite database with Prisma/better-sqlite3
+	• Basic folder structure and package.json setup
+Manual Test 1: Server starts, basic API responds, database connects
+Script 2: Google OAuth Integration (< 200 lines)
+	• Google OAuth setup (client + server)
+	• Login/logout functionality
+	• User session management
+	• Protected route middleware
+Manual Test 2: Users can log in with Gmail, sessions persist, protected routes work
+Script 3: Landing Page & Basic UI (< 200 lines)
+	• Landing page component
+	• Tailwind CSS setup
+	• Responsive design foundation
+	• Navigation components
+Manual Test 3: UI renders correctly, responsive on mobile, navigation works
+Phase 2: League Management (Scripts 4-6)
+Script 4: League Creation System (< 200 lines)
+	• League creation form and validation
+	• Invite code generation (6-character alphanumeric)
+	• Database operations for leagues
+	• Copy-to-clipboard functionality
+Manual Test 4: Create league, generate invite code, copy functionality works
+Script 5: Join League System (< 200 lines)
+	• Join league via invite code
+	• Input validation and error handling
+	• League member management
+	• Basic league dashboard
+Manual Test 5: Join existing league with invite code, view league members
+Script 6: Team Setup Form (< 200 lines)
+	• Team name and player name input
+	• Free sports sprite icon selector (find 15-20 free icons)
+	• Form validation and submission
+	• Team data persistence
+Manual Test 6: Complete team setup, select icon, save team information
+Phase 3: Map Integration (Scripts 7-9)
+Script 7: OpenStreetMap Integration (< 200 lines)
+	• Leaflet map component setup
+	• Basic map rendering and controls
+	• Click-to-select coordinates functionality
+	• Coordinate display and validation
+Manual Test 7: Map loads, click to select coordinates, coordinates display correctly
+Script 8: Coordinate Selection & Submission (< 200 lines)
+	• Coordinate selection UI improvements
+	• Copy coordinates functionality
+	• Submit selection with confirmation
+	• Update team status in database
+Manual Test 8: Select coordinates, copy them, submit successfully
+Script 9: League Status Polling (< 200 lines)
+	• Polling system for league status updates
+	• Display submitted vs pending members
+	• Auto-refresh league dashboard
+	• Commissioner vs member view differences
+Manual Test 9: Real-time-ish updates show member submission status
+Phase 4: Landmark Selection (Scripts 10-12)
+Script 10: Landmark Database Setup (< 200 lines)
+	• Create landmarks database with 50+ world landmarks
+	• Use Wikimedia Commons URLs for images
+	• Landmark data seeding script
+	• API endpoints for landmark retrieval
+Manual Test 10: Landmark database populated, API returns random landmarks
+Script 11: Spinning Wheel Animation (< 200 lines)
+	• CSS-based spinning wheel component
+	• Animation controls and easing
+	• Random landmark selection logic
+	• Wheel result display
+Manual Test 11: Wheel spins smoothly, selects random landmark, displays result
+Script 12: Landmark Selection Integration (< 200 lines)
+	• Integrate wheel with league system
+	• Display selected landmark with image
+	• 2-second pause implementation
+	• Update league with selected landmark
+Manual Test 12: Commissioner can spin wheel, landmark saves to league
+Phase 5: Draft Order Calculation (Scripts 13-15)
+Script 13: Distance Calculation Algorithm (< 200 lines)
+	• Haversine formula implementation
+	• Calculate distances for all team coordinates
+	• Sort teams by proximity to landmark
+	• Generate draft order rankings
+Manual Test 13: Distances calculate correctly, draft order generates properly
+Script 14: Results Animation & Display (< 200 lines)
+	• Map animation showing team proximities
+	• Visual distance indicators
+	• Animated reveal of draft order
+	• Results popup component
+Manual Test 14: Animation plays smoothly, results display correctly
+Script 15: Download Results Feature (< 200 lines)
+	• Generate draft order image using Canvas API
+	• Professional formatting with league info
+	• Download functionality
+	• Share options
+Manual Test 15: Generate and download draft order image successfully
+Database Schema (SQLite → PostgreSQL)
+Development (SQLite)
+-- leagues table
+CREATE TABLE leagues (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  invite_code TEXT UNIQUE NOT NULL,
+  commissioner_id TEXT NOT NULL,
+  max_members INTEGER NOT NULL,
+  status TEXT DEFAULT 'waiting',
+  selected_landmark_id TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- teams table
+CREATE TABLE teams (
+  id TEXT PRIMARY KEY,
+  league_id TEXT NOT NULL,
+  user_id TEXT NOT NULL,
+  team_name TEXT NOT NULL,
+  player_name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  icon_id TEXT NOT NULL,
+  selected_lat REAL,
+  selected_lng REAL,
+  has_submitted BOOLEAN DEFAULT FALSE,
+  distance_from_landmark REAL,
+  draft_position INTEGER,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (league_id) REFERENCES leagues (id)
+);
+
+-- landmarks table
+CREATE TABLE landmarks (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  latitude REAL NOT NULL,
+  longitude REAL NOT NULL,
+  category TEXT,
+  image_url TEXT,
+  country TEXT
+);
+
+File Structure
+fantasy-draft-app/
+├── client/                 # React frontend
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── auth/
+│   │   │   ├── league/
+│   │   │   ├── map/
+│   │   │   ├── wheel/
+│   │   │   └── common/
+│   │   ├── hooks/
+│   │   ├── services/
+│   │   ├── utils/
+│   │   └── types/
+│   ├── public/
+│   └── package.json
+├── server/                 # Express backend
+│   ├── src/
+│   │   ├── routes/
+│   │   ├── middleware/
+│   │   ├── services/
+│   │   ├── database/
+│   │   └── utils/
+│   ├── database.sqlite     # Development DB
+│   └── package.json
+├── shared/                 # Shared types/utils
+├── .github/workflows/      # CI/CD
+├── docker-compose.yml      # Development environment
+└── README.md
+
+Free Resources Integration
+Sports Icons (15-20 free icons)
+	• Source: OpenGameArt.org, Kenney.nl, or Freepik
+	• Format: SVG or PNG (32x32px)
+	• Style: Sports equipment, team mascots, or simple geometric shapes
+	• License: CC0 or similar free license
+Landmark Images
+	• Source: Wikimedia Commons
+	• API: https://commons.wikimedia.org/wiki/Special:FilePath/[filename]
+	• Fallback: OpenStreetMap images or placeholder service
+Landmark Database (50+ entries)
+// Sample landmark data structure
+{
+  name: "Eiffel Tower",
+  latitude: 48.8584,
+  longitude: 2.2945,
+  category: "monument",
+  image_url: "https://commons.wikimedia.org/wiki/Special:FilePath/Tour_Eiffel_Wikimedia_Commons.jpg",
+  country: "France"
+}
+
+Development Environment Setup
+Docker Configuration (Optional)
+# Simple Docker setup for consistent development
+# Include PostgreSQL for production simulation
+
+Environment Variables
+# Development
+DATABASE_URL="file:./database.sqlite"
+GOOGLE_CLIENT_ID="your_google_client_id"
+GOOGLE_CLIENT_SECRET="your_google_client_secret"
+JWT_SECRET="your_jwt_secret"
+
+# Production (Railway)
+DATABASE_URL="postgresql://user:pass@host:port/db"
+
+Testing Checklists
+Manual Testing Template (for each phase)
+## Feature: [Feature Name]
+### Setup:
+- [ ] Dependencies installed
+- [ ] Environment variables set
+- [ ] Database migrated
+
+### Functionality:
+- [ ] Feature loads without errors
+- [ ] User interactions work as expected
+- [ ] Data persists correctly
+- [ ] Error handling works
+
+### Browser Testing:
+- [ ] Chrome (desktop)
+- [ ] Firefox (desktop)
+- [ ] Safari/Chrome (mobile)
+- [ ] Responsive design works
+
+### Performance:
+- [ ] Page loads under 3 seconds
+- [ ] No console errors
+- [ ] Memory usage reasonable
+
+Deployment Guide
+Vercel Deployment (Frontend)
+	1. Connect GitHub repo to Vercel
+	2. Set build command: npm run build
+	3. Set environment variables
+	4. Auto-deploy on push to main
+Railway Deployment (Backend + Database)
+	1. Connect GitHub repo to Railway
+	2. Add PostgreSQL service
+	3. Set environment variables
+	4. Deploy backend service
+CI/CD Pipeline (.github/workflows)
+	• Automated testing on pull requests
+	• Linting and type checking
+	• Build verification
+	• Deployment triggers
+Cost Breakdown (All Free Tiers)
+	• Hosting: Vercel (free tier) + Railway (free tier)
+	• Database: Railway PostgreSQL (free tier)
+	• Maps: OpenStreetMap (completely free)
+	• Images: Wikimedia Commons (free)
+	• Icons: Open source sprite packs (free)
+	• Authentication: Google OAuth (free)
+	• Domain: Railway/Vercel subdomain (free)
+Success Metrics
+	• Each script under 200 lines
+	• Manual testing passes before next feature
+	• No external costs incurred
+	• Full functionality working end-to-end
+	• Deployable to production environment
+Project Context Management
+Create project_context.md File
+First Priority: Create a project_context.md file in the root directory that serves as the single source of truth for project status. This file should be updated after each script generation and testing phase.
+project_context.md Structure
+# Fantasy Draft Order Selector - Project Context
+
+## Project Overview
+[Brief description of the application and its purpose]
+
+## Current Status
+- **Current Phase**: [Phase name and number]
+- **Last Completed Script**: [Script number and name]
+- **Last Successful Test**: [Date and feature tested]
+- **Next Planned Script**: [Script number and name]
+
+## Implementation Progress
+### ✅ Completed Features
+- [ ] Script 1: Project Setup & Basic Structure
+- [ ] Script 2: Google OAuth Integration
+- [ ] Script 3: Landing Page & Basic UI
+- [Continue with all 15 scripts...]
+
+### 🚧 In Progress
+- **Current Script**: [Details of what's being worked on]
+- **Blockers**: [Any issues or dependencies]
+- **Testing Status**: [Pass/Fail/Pending]
+
+### 📋 Pending Features
+- [List remaining scripts/features]
+
+## Technical Decisions Made
+### Architecture Choices
+- Database: SQLite (dev) → Railway PostgreSQL (prod)
+- Maps: OpenStreetMap with Leaflet
+- Real-time: 3-5 second polling
+- Authentication: Google OAuth
+- Deployment: Vercel + Railway
+
+### Resource Selections
+- Icons: [Specific icon pack/source chosen]
+- Landmark Images: [Source and format decided]
+- Styling: [Specific Tailwind configuration]
+
+## Environment Setup
+### Development
+- Node.js version: [version]
+- Package manager: [npm/yarn]
+- Database file: ./database.sqlite
+- Port configurations: [frontend/backend ports]
+
+### Production
+- Frontend: Vercel deployment URL
+- Backend: Railway deployment URL
+- Database: Railway PostgreSQL connection
+
+## Known Issues & Solutions
+### Resolved Issues
+- [List of problems encountered and how they were solved]
+
+### Current Issues
+- [Any ongoing problems that need attention]
+
+### Technical Debt
+- [Areas that need refactoring or improvement]
+
+## API Endpoints Implemented
+### Authentication
+- [ ] POST /auth/google - OAuth login
+- [ ] GET /auth/user - Get current user
+- [ ] POST /auth/logout - Logout user
+
+### League Management
+- [ ] POST /api/leagues - Create new league
+- [ ] GET /api/leagues/:inviteCode - Get league by invite code
+- [ ] GET /api/leagues/:id - Get league details
+- [ ] PUT /api/leagues/:id/finalize - Finalize draft order
+
+[Continue with all endpoints...]
+
+## Database Schema Status
+### Tables Created
+- [ ] leagues
+- [ ] teams  
+- [ ] landmarks
+- [ ] users (if needed)
+
+### Data Seeded
+- [ ] Landmark database (50+ entries)
+- [ ] Test leagues
+- [ ] Sample teams
+
+## Testing Results
+### Last Testing Session
+- **Date**: [Date]
+- **Scripts Tested**: [List]
+- **Results**: [Pass/Fail details]
+- **Browser Compatibility**: [Results]
+- **Performance Notes**: [Any observations]
+
+## Deployment Status
+### Development Environment
+- **Status**: [Working/Broken/Not Set Up]
+- **Last Updated**: [Date]
+- **Access URL**: [Local development URL]
+
+### Production Environment
+- **Frontend Status**: [Deployed/Pending/Failed]
+- **Backend Status**: [Deployed/Pending/Failed]
+- **Database Status**: [Connected/Pending/Failed]
+- **Last Deployment**: [Date and version]
+
+## Additional Context & Notes
+### User Feedback
+- [Any feedback received during testing]
+
+### Performance Observations
+- [Loading times, responsiveness notes]
+
+### Future Enhancements
+- [Ideas for post-MVP features]
+
+### Important Reminders
+- [Critical notes for future development sessions]
+
+## Contact & Resources
+### External Dependencies
+- Google OAuth credentials: [Status]
+- Railway account: [Status]  
+- Vercel account: [Status]
+- GitHub repo: [URL and status]
+
+### Documentation Links
+- [Links to important external docs or resources]
+
+---
+**Last Updated**: [Date and time]
+**Updated By**: [Roo Code session identifier]
+**Next Review**: [When this should be updated next]
+
+Instructions for Roo Code
+Context File Management
+	1. Initial Creation: Generate the project_context.md file as the very first task
+	2. Regular Updates: Update this file after each script generation and testing phase
+	3. Session Continuity: Always read this file at the start of any new chat/context window
+	4. Status Tracking: Mark completed items with ✅, in-progress with 🚧, pending with 📋
+Update Triggers
+	• Before generating any new script
+	• After each manual testing phase
+	• When encountering blockers or issues
+	• After successful deployment steps
+	• When making architecture decisions
+Version Control
+	• Commit the project_context.md file with each code change
+	• Use descriptive commit messages that reference the context file updates
+	• Tag major milestones (Phase completions) in Git
+Important:
+	1. Always start any new Roo Code session by reading project_context.md
+	2. Update project_context.md before and after each script generation
+	3. Include the current status in all communications
+Wait for manual testing confirmation before marking features as complete
