@@ -1,4 +1,4 @@
-import db from './index';
+import db, { dbReady } from './index';
 
 const createLeaguesTable = `
   CREATE TABLE IF NOT EXISTS leagues (
@@ -44,15 +44,30 @@ const createLandmarksTable = `
   );
 `;
 
-db.serialize(() => {
-  db.run(createLeaguesTable);
-  db.run(createTeamsTable);
-  db.run(createLandmarksTable, (err) => {
-    if (err) {
-      console.error(err.message);
-    }
-    console.log('Database tables created successfully.');
-  });
-});
 
-db.close();
+export async function init() {
+  try {
+    const db = await dbReady;
+    await new Promise<void>((resolve, reject) => {
+      db.serialize(() => {
+        db.run(createLeaguesTable, (err) => {
+          if (err) return reject(err);
+          db.run(createTeamsTable, (err) => {
+            if (err) return reject(err);
+            db.run(createLandmarksTable, (err) => {
+              if (err) return reject(err);
+              console.log('Database tables created successfully.');
+              db.close((err) => {
+                if (err) return reject(err);
+                resolve();
+              });
+            });
+          });
+        });
+      });
+    });
+  } catch (err) {
+    console.error('Error initializing database:', err);
+    throw err;
+  }
+}
