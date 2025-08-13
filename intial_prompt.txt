@@ -127,7 +127,6 @@ CREATE TABLE leagues (
   selected_landmark_id TEXT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
-
 -- teams table
 CREATE TABLE teams (
   id TEXT PRIMARY KEY,
@@ -145,7 +144,6 @@ CREATE TABLE teams (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (league_id) REFERENCES leagues (id)
 );
-
 -- landmarks table
 CREATE TABLE landmarks (
   id TEXT PRIMARY KEY,
@@ -156,7 +154,6 @@ CREATE TABLE landmarks (
   image_url TEXT,
   country TEXT
 );
-
 File Structure
 fantasy-draft-app/
 ├── client/                 # React frontend
@@ -186,7 +183,6 @@ fantasy-draft-app/
 ├── .github/workflows/      # CI/CD
 ├── docker-compose.yml      # Development environment
 └── README.md
-
 Free Resources Integration
 Sports Icons (15-20 free icons)
 	• Source: OpenGameArt.org, Kenney.nl, or Freepik
@@ -207,22 +203,18 @@ Landmark Database (50+ entries)
   image_url: "https://commons.wikimedia.org/wiki/Special:FilePath/Tour_Eiffel_Wikimedia_Commons.jpg",
   country: "France"
 }
-
 Development Environment Setup
 Docker Configuration (Optional)
 # Simple Docker setup for consistent development
 # Include PostgreSQL for production simulation
-
 Environment Variables
 # Development
 DATABASE_URL="file:./database.sqlite"
 GOOGLE_CLIENT_ID="your_google_client_id"
 GOOGLE_CLIENT_SECRET="your_google_client_secret"
 JWT_SECRET="your_jwt_secret"
-
 # Production (Railway)
 DATABASE_URL="postgresql://user:pass@host:port/db"
-
 Testing Checklists
 Manual Testing Template (for each phase)
 ## Feature: [Feature Name]
@@ -230,24 +222,20 @@ Manual Testing Template (for each phase)
 - [ ] Dependencies installed
 - [ ] Environment variables set
 - [ ] Database migrated
-
 ### Functionality:
 - [ ] Feature loads without errors
 - [ ] User interactions work as expected
 - [ ] Data persists correctly
 - [ ] Error handling works
-
 ### Browser Testing:
 - [ ] Chrome (desktop)
 - [ ] Firefox (desktop)
 - [ ] Safari/Chrome (mobile)
 - [ ] Responsive design works
-
 ### Performance:
 - [ ] Page loads under 3 seconds
 - [ ] No console errors
 - [ ] Memory usage reasonable
-
 Deployment Guide
 Vercel Deployment (Frontend)
 	1. Connect GitHub repo to Vercel
@@ -278,163 +266,4 @@ Success Metrics
 	• No external costs incurred
 	• Full functionality working end-to-end
 	• Deployable to production environment
-Project Context Management
-Create project_context.md File
-First Priority: Create a project_context.md file in the root directory that serves as the single source of truth for project status. This file should be updated after each script generation and testing phase.
-project_context.md Structure
-# Fantasy Draft Order Selector - Project Context
-
-## Project Overview
-[Brief description of the application and its purpose]
-
-## Current Status
-- **Current Phase**: [Phase name and number]
-- **Last Completed Script**: [Script number and name]
-- **Last Successful Test**: [Date and feature tested]
-- **Next Planned Script**: [Script number and name]
-
-## Implementation Progress
-### ✅ Completed Features
-- [ ] Script 1: Project Setup & Basic Structure
-- [ ] Script 2: Google OAuth Integration
-- [ ] Script 3: Landing Page & Basic UI
-- [Continue with all 15 scripts...]
-
-### 🚧 In Progress
-- **Current Script**: [Details of what's being worked on]
-- **Blockers**: [Any issues or dependencies]
-- **Testing Status**: [Pass/Fail/Pending]
-
-### 📋 Pending Features
-- [List remaining scripts/features]
-
-## Technical Decisions Made
-### Architecture Choices
-- Database: SQLite (dev) → Railway PostgreSQL (prod)
-- Maps: OpenStreetMap with Leaflet
-- Real-time: 3-5 second polling
-- Authentication: Google OAuth
-- Deployment: Vercel + Railway
-
-### Resource Selections
-- Icons: [Specific icon pack/source chosen]
-- Landmark Images: [Source and format decided]
-- Styling: [Specific Tailwind configuration]
-
-## Environment Setup
-### Development
-- Node.js version: [version]
-- Package manager: [npm/yarn]
-- Database file: ./database.sqlite
-- Port configurations: [frontend/backend ports]
-
-### Production
-- Frontend: Vercel deployment URL
-- Backend: Railway deployment URL
-- Database: Railway PostgreSQL connection
-
-## Known Issues & Solutions
-### Resolved Issues
-- [List of problems encountered and how they were solved]
-
-### Current Issues
-- [Any ongoing problems that need attention]
-
-### Technical Debt
-- [Areas that need refactoring or improvement]
-
-## API Endpoints Implemented
-### Authentication
-- [ ] POST /auth/google - OAuth login
-- [ ] GET /auth/user - Get current user
-- [ ] POST /auth/logout - Logout user
-
-### League Management
-- [ ] POST /api/leagues - Create new league
-- [ ] GET /api/leagues/:inviteCode - Get league by invite code
-- [ ] GET /api/leagues/:id - Get league details
-- [ ] PUT /api/leagues/:id/finalize - Finalize draft order
-
-[Continue with all endpoints...]
-
-## Database Schema Status
-### Tables Created
-- [ ] leagues
-- [ ] teams  
-- [ ] landmarks
-- [ ] users (if needed)
-
-### Data Seeded
-- [ ] Landmark database (50+ entries)
-- [ ] Test leagues
-- [ ] Sample teams
-
-## Testing Results
-### Last Testing Session
-- **Date**: [Date]
-- **Scripts Tested**: [List]
-- **Results**: [Pass/Fail details]
-- **Browser Compatibility**: [Results]
-- **Performance Notes**: [Any observations]
-
-## Deployment Status
-### Development Environment
-- **Status**: [Working/Broken/Not Set Up]
-- **Last Updated**: [Date]
-- **Access URL**: [Local development URL]
-
-### Production Environment
-- **Frontend Status**: [Deployed/Pending/Failed]
-- **Backend Status**: [Deployed/Pending/Failed]
-- **Database Status**: [Connected/Pending/Failed]
-- **Last Deployment**: [Date and version]
-
-## Additional Context & Notes
-### User Feedback
-- [Any feedback received during testing]
-
-### Performance Observations
-- [Loading times, responsiveness notes]
-
-### Future Enhancements
-- [Ideas for post-MVP features]
-
-### Important Reminders
-- [Critical notes for future development sessions]
-
-## Contact & Resources
-### External Dependencies
-- Google OAuth credentials: [Status]
-- Railway account: [Status]  
-- Vercel account: [Status]
-- GitHub repo: [URL and status]
-
-### Documentation Links
-- [Links to important external docs or resources]
-
----
-**Last Updated**: [Date and time]
-**Updated By**: [Roo Code session identifier]
-**Next Review**: [When this should be updated next]
-
-Instructions for Roo Code
-Context File Management
-	1. Initial Creation: Generate the project_context.md file as the very first task
-	2. Regular Updates: Update this file after each script generation and testing phase
-	3. Session Continuity: Always read this file at the start of any new chat/context window
-	4. Status Tracking: Mark completed items with ✅, in-progress with 🚧, pending with 📋
-Update Triggers
-	• Before generating any new script
-	• After each manual testing phase
-	• When encountering blockers or issues
-	• After successful deployment steps
-	• When making architecture decisions
-Version Control
-	• Commit the project_context.md file with each code change
-	• Use descriptive commit messages that reference the context file updates
-	• Tag major milestones (Phase completions) in Git
-Important:
-	1. Always start any new Roo Code session by reading project_context.md
-	2. Update project_context.md before and after each script generation
-	3. Include the current status in all communications
-Wait for manual testing confirmation before marking features as complete
+Important: After each script generation, provide the manual testing checklist specific to that feature. Wait for confirmation that tests pass before generating the next script.
